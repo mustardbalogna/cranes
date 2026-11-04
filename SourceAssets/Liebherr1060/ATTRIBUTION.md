@@ -22,9 +22,16 @@ changes when distributing this asset or a project containing it.
 - **R / F:** Telescopic Boom Length (smoothly telescopes all 5 nested boom stages in and out from fully retracted $\approx 8.96\text{ m}$ resting length up to original modeled $\approx 40.58\text{ m}$ length with zero gaps)
 - **Up / Down Arrows:** Lift / Lower Hook Block (hoist cables dynamically track boom tip and hook block across all boom angles and lengths)
 - **Left / Right Arrows:** Rotate Turntable / Upper Assembly
-- **C:** Switch Controls & Camera between Mobile Crane and Stationary Tower Crane
-- **Right Mouse Button + Drag:** Orbit Camera (both Mobile Crane and Tower Crane have full high-angle orbital cameras)
-- **Mouse Wheel:** Zoom Camera In / Out
+- **C:** Cycle outside, side, overhead, boom-tip straight down, and driver-cab windshield views. Cycling while flying saves the view and resumes following.
+- **G:** Toggle flight/follow without changing the current view. Fly with W/S, A/D, and Page Up/Down; right-mouse look is faster while flying.
+- **Right Mouse Button + Drag:** Orbit the outside view or look around the selected mounted view.
+- **Mouse Wheel:** Zoom the outside view, or move forward/backward while flying.
+
+Each camera remembers its position and orientation when cycling away and back,
+including flight adjustments. Views follow their truck-relative mounts rather
+than restoring stale world positions after driving. The boom-tip view follows
+telescoping, pitch, and upper rotation independently of hook lowering; the driver
+view follows the chassis and does not tilt with the boom.
 
 The movement functions passed focused Unreal runtime checks for hook travel,
 hoist lines, upper rotation, driving, steering, wheel spin, camera limits, and

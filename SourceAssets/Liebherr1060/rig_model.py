@@ -103,7 +103,10 @@ def split_parts():
         "BoomSec5": hinge_pin,
         "Hook": np.array([946.0, 2.0, 3830.0]),
     }
-    omitted = {f"Mesh{index}" for index in range(68, 74)}
+    cable_groups = {f"Mesh{index}" for index in range(68, 74)}
+    # This rigid full-length strip protrudes past both ends when the boom retracts.
+    omitted_boom_groups = {"Group13"}
+    omitted = cable_groups | omitted_boom_groups
     wheel_bounds = {}
     for index, tire_name in enumerate(tires, start=1):
         name = f"Wheel{index:02d}"
@@ -155,12 +158,17 @@ def split_parts():
             
     exported_faces = sum(len(meshes[name].faces) for names in parts.values() for name in names)
     omitted_faces = sum(len(meshes[name].faces) for name in omitted)
-    if exported_faces + omitted_faces != 61621 or omitted_faces != 12:
+    if exported_faces + omitted_faces != 61621 or omitted_faces != 14:
         raise ValueError(f"Articulation lost or duplicated source faces: {exported_faces} + {omitted_faces}")
 
     directory = Path(__file__).resolve().parent / "model" / "Parts"
     directory.mkdir(exist_ok=True)
-    manifest = {"parts": {}, "omitted_cable_groups": sorted(omitted), "total_source_faces": 61621}
+    manifest = {
+        "parts": {},
+        "omitted_cable_groups": sorted(cable_groups),
+        "omitted_boom_groups": sorted(omitted_boom_groups),
+        "total_source_faces": 61621,
+    }
     for part, names in parts.items():
         pivot = pivots[part]
         pools = attributes
@@ -221,7 +229,7 @@ def split_parts():
     manifest_path.write_text(json.dumps(manifest, indent=2), encoding="utf-8")
     for part, entry in manifest["parts"].items():
         print(f"{part}: {entry['faces']} faces, {len(entry['groups'])} groups, pivot {entry['pivot_ue_cm']}")
-    print(f"PASS: {exported_faces} exported faces + {omitted_faces} replaced cable faces = 61621")
+    print(f"PASS: {exported_faces} exported faces + {omitted_faces} omitted faces = 61621")
     print(f"Manifest: {manifest_path}")
 
 
